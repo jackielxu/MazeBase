@@ -1,3 +1,5 @@
+require 'torch'
+
 dofile('games/init.lua')
 
 function main(gname)
@@ -22,8 +24,7 @@ function main(gname)
 		g:act(action)
 		g_disp.image(g.map:to_image(), {win=state_win})
 	end
-end
-
+end 
 
 function init_game(gname)
 	g_opts = {games_config_path = 'games/config/game_config.lua'}
@@ -35,12 +36,19 @@ function init_game(gname)
 	g_disp = require('display')
 	state_win = g_disp.image(g.map:to_image())
 	return g, g_disp, state_win
-end
+end 
 
-if #arg == 1 then
-	gname = "Goto"
-else
-	gname = arg[1]
-end
+local cmd = torch.CmdLine()
+cmd:text()
+cmd:text('Play games in MazeBase using wasd commands')
+cmd:text()
+cmd:text('Options:')
+cmd:option('-gname', 'Goto', 'name of Mazebase game to play')
+cmd:text()
+
+local opt = cmd:parse(arg)
+print(opt)
+gname = opt.gname 
 
 main(gname)
+
