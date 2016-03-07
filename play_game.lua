@@ -1,4 +1,4 @@
-dofile('MazeBase/games/init.lua')
+dofile('games/init.lua')
 
 function main(gname)
 	g, g_disp, state_win = init_game(gname)
@@ -26,18 +26,18 @@ end
 
 
 function init_game(gname)
-	g_opts = {games_config_path = 'MazeBase/games/config/game_config.lua'}
+	g_opts = {games_config_path = 'games/config/game_config.lua'}
 	-- Insert the place where we specify what game we want
 	g_init_vocab()
 	g_init_game()
-	g = new_game()
+	g = g_factory:init_game(gname)
 	s = g:to_sentence()
 	g_disp = require('display')
 	state_win = g_disp.image(g.map:to_image())
 	return g, g_disp, state_win
 end
 
-if arg[1] == nil then
+if #arg == 1 then
 	gname = "Goto"
 else
 	gname = arg[1]
