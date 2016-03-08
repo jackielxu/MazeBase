@@ -2,7 +2,7 @@
 -- All rights reserved.
 --
 -- This source code is licensed under the BSD-style license found in the
--- LICENSE file in the root directory of this source tree. An additional grant 
+-- LICENSE file in the root directory of this source tree. An additional grant
 -- of patent rights can be found in the PATENTS file in the same directory.
 
 local GameFactory = torch.class('GameFactory')
@@ -32,7 +32,7 @@ function GameFactory:__init(opts,vocab,games,helpers)
 end
 
 function GameFactory:init_game(gname)
-     local gopts = self.helpers[gname]:generate_gameopts()
+    local gopts = self.helpers[gname]:generate_gameopts()
     local g = self.games[gname](gopts,self.vocab)
     return g
 end

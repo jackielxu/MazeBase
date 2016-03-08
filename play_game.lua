@@ -23,12 +23,13 @@ function main(gname)
     print("Action " .. action .. " pressed!")
     g:act(action)
     g_disp.image(g.map:to_image(), {win=state_win})
+    print(g.agents[1]["map"]["items"])
   end
 end
 
+-- Initializes a game with the specified game name
 function init_game(gname)
   g_opts = {games_config_path = 'games/config/game_config.lua'}
-  -- Insert the place where we specify what game we want
   g_init_vocab()
   g_init_game()
   g = g_factory:init_game(gname)
