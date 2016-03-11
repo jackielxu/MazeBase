@@ -2,6 +2,7 @@ require 'torch'
 require 'os'
 require 'io'
 require 'table'
+require 'math'
 
 dofile('games/init.lua')
 
@@ -10,8 +11,8 @@ function main(gname)
   g, g_disp, state_win = init_game(gname)
 
   -- Prepare files to write timeseries information
-  game_state_filename = gname .. "-game-state-ts.txt"
-  action_state_filename = gname .. "-action-state.txt"
+  game_state_filename = gname .. "-feature-state-ts.txt"
+  action_state_filename = gname .. "-action-state-ts.txt"
   -- local game_state_file = io.open(game_state_filename, "w")
   -- local action_file = io.open(action_state_filename, "w")
 
@@ -51,7 +52,7 @@ function main(gname)
 
     -- TODO: Put these two actions into a separate thread; the thread needs the game object g for snapshot, and the action buffer for write_action
     -- Get game state snapshot and write to file
-    local snapshot = get_snapshot(g)
+    local snapshot = get_feature_snapshot(g)
     write_snapshot(snapshot, game_state_filename)
 
     -- Write action state to file from buffer
@@ -96,8 +97,43 @@ function write_snapshot(snapshot, game_state_filename)
   f:close()
 end
 
--- Get desired game info
-function get_snapshot(g, file)
+-- Get game state information about pairwise distance from agent to objects
+function get_feature_snapshot(g)
+	items = g.agents[1]["map"]["items"]
+	all_items = {}
+	snapshot = {}
+	agent_x = 0
+	agent_y = 0
+
+	-- Find where the agent is
+	for i=1,#items do
+		for j=1,#items[i] do
+			if next(items[i][j]) ~= nil then
+				if items[i][j][1]["attr"]["type"] == "agent" then
+					agent_x = items[i][j][1]["attr"]["loc"]["x"]
+					agent_y = items[i][j][1]["attr"]["loc"]["y"]
+					break
+				end
+			end
+		end
+	end
+
+	-- For every object that isn't empty, add the distance from each object to the agent
+	for i=1,#items do
+		for j=1,#items[i] do
+			if next(items[i][j]) ~= nil then
+				local obj_x = items[i][j][1]["attr"]["loc"]["x"]
+				local obj_y = items[i][j][1]["attr"]["loc"]["y"]
+				table.insert(snapshot, math.sqrt((agent_x - obj_x)*(agent_x - obj_x) + (agent_y - obj_y)*(agent_y - obj_y)))
+			end
+		end
+	end
+	print(snapshot)
+	return snapshot
+end
+
+-- Get full game state information
+function get_full_snapshot(g)
   items = g.agents[1]["map"]["items"]
   snapshot = {}
   for i=1,#items do
