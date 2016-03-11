@@ -26,7 +26,7 @@ fit the model). Maybe this demo should use multinomial emissions...
 data = np.loadtxt(os.path.join(os.path.dirname(__file__),'Goto-feature-state-ts.txt'))[:2500]
 # data = np.loadtxt(os.path.join(os.path.dirname(__file__),'LightKey-feature-state-ts.txt'))[:2500]
 mean = data.mean(axis=1)
-data = data - mean[:, np.newaxis] 
+data = data - mean[:, np.newaxis]
 
 #########################
 #  posterior inference  #
@@ -42,7 +42,7 @@ obs_hypparams = {'mu_0':np.zeros(obs_dim),
                 'kappa_0':0.3,
                 'nu_0':obs_dim+5}
 dur_hypparams = {'alpha_0':2*30,
-                 'beta_0':2} 
+                 'beta_0':2}
 
 ### HDP-HMM without the sticky bias
 
@@ -74,7 +74,7 @@ plt.gcf().suptitle('Sticky HDP-HMM sampled model after 1000 iterations')
 ## HDP-HSMM
 
 obs_distns = [pyhsmm.distributions.Gaussian(**obs_hypparams) for state in range(Nmax)]
-dur_distns = [pyhsmm.distributions.PoissonDuration(**dur_hypparams) for state in range(Nmax)] 
+dur_distns = [pyhsmm.distributions.PoissonDuration(**dur_hypparams) for state in range(Nmax)]
 
 posteriormodel = pyhsmm.models.WeakLimitHDPHSMM(
         alpha=6.,gamma=6., # these can matter; see concentration-resampling.py
@@ -86,7 +86,7 @@ posteriormodel.add_data(data,trunc=60) # duration truncation speeds things up wh
 for idx in progprint_xrange(1000):
     posteriormodel.resample_model()
 
-posteriormodel.plot() 
+posteriormodel.plot()
 plt.gcf().suptitle('HDP-HSMM sampled model after 1000 iterations')
 
 plt.show()
