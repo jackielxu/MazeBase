@@ -23,7 +23,8 @@ fit the model). Maybe this demo should use multinomial emissions...
 #  load data  #
 ###############
 
-data = np.loadtxt(os.path.join(os.path.dirname(__file__),'Goto-feature-state-ts.txt'))[:2500]
+data = np.loadtxt(os.path.join(os.path.dirname(__file__),'MultiGoals-feature-state-ts.txt'))[:2500]
+#data = np.loadtxt(os.path.join(os.path.dirname(__file__),'Goto-feature-state-ts.txt'))[:2500]
 # data = np.loadtxt(os.path.join(os.path.dirname(__file__),'LightKey-feature-state-ts.txt'))[:2500]
 mean = data.mean(axis=1)
 data = data - mean[:, np.newaxis]
@@ -35,13 +36,16 @@ data = data - mean[:, np.newaxis]
 # Set the weak limit truncation level
 Nmax = 10
 
+# Set iteration count
+ITERATIONS = 2000
+
 # and some hyperparameters
 obs_dim = data.shape[1]
 obs_hypparams = {'mu_0':np.zeros(obs_dim),
                 'sigma_0':np.eye(obs_dim),
                 'kappa_0':0.3,
                 'nu_0':obs_dim+5}
-dur_hypparams = {'alpha_0':2*30,
+dur_hypparams = {'alpha_0':2,
                  'beta_0':2}
 
 ### HDP-HMM without the sticky bias
@@ -51,7 +55,7 @@ posteriormodel = pyhsmm.models.WeakLimitHDPHMM(alpha=6.,gamma=6.,init_state_conc
                                    obs_distns=obs_distns)
 posteriormodel.add_data(data)
 
-for idx in progprint_xrange(1000):
+for idx in progprint_xrange(ITERATIONS):
     posteriormodel.resample_model()
 
 posteriormodel.plot()
@@ -65,7 +69,7 @@ posteriormodel = pyhsmm.models.WeakLimitStickyHDPHMM(
         obs_distns=obs_distns)
 posteriormodel.add_data(data)
 
-for idx in progprint_xrange(1000):
+for idx in progprint_xrange(ITERATIONS):
     posteriormodel.resample_model()
 
 posteriormodel.plot()
@@ -83,7 +87,7 @@ posteriormodel = pyhsmm.models.WeakLimitHDPHSMM(
         dur_distns=dur_distns)
 posteriormodel.add_data(data,trunc=60) # duration truncation speeds things up when it's possible
 
-for idx in progprint_xrange(1000):
+for idx in progprint_xrange(ITERATIONS):
     posteriormodel.resample_model()
 
 posteriormodel.plot()

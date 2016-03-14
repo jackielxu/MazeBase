@@ -15,8 +15,6 @@ function main(gname)
   -- Prepare files to write timeseries information
   game_state_filename = gname .. "-feature-state-ts.txt"
   action_state_filename = gname .. "-action-state-ts.txt"
-  -- local game_state_file = io.open(game_state_filename, "w")
-  -- local action_file = io.open(action_state_filename, "w")
 
   -- Create the buffer to store actions to be read and written to file
   action_buffer = {}
@@ -140,94 +138,6 @@ function get_feature_snapshot(g, objects, agent_x, agent_y)
   return snapshot
 end
 
--- Get full game state information
-function get_full_snapshot(g)
-  items = g.agents[1]["map"]["items"]
-  snapshot = {}
-  for i=1,#items do
-    for j=1,#items[i] do
-      if next(items[i][j]) == nil then
-        table.insert(snapshot, i)
-        table.insert(snapshot, j)
-        table.insert(snapshot, 1)
-        table.insert(snapshot, 0)
-        table.insert(snapshot, 0)
-        table.insert(snapshot, 0)
-      else
-        attr = items[i][j][1]["attr"]
-        if attr["loc"] then
-          table.insert(snapshot, attr["loc"]["y"])
-          table.insert(snapshot, attr["loc"]["x"])
-        end
-
-        if attr["type"] then
-          table.insert(snapshot, type_mapping[attr["type"]])
-        end
-
-        if attr["color"] then
-          table.insert(snapshot, color_num[attr["color"]])
-        else
-          table.insert(snapshot, 0)
-        end
-
-        if attr["open"] then
-          table.insert(snapshot, door_open[attr["open"]])
-        else
-          table.insert(snapshot, 0)
-        end
-
-        if attr["goal"] then
-          table.insert(snapshot, goal_num[attr["goal"]])
-        else
-          table.insert(snapshot, 0)
-        end
-      end
-    end
-  end
-  print(snapshot)
-  return snapshot
-end
-
-function get_type_mapping()
-  t = {}
-  t["0"] = 1
-  t["block"] = 2
-  t["water"] = 3
-  t["switch"] = 4
-  t["door"] = 5
-  t["pushableblock"] = 6
-  t["corner"] = 7
-  t["goal"] = 8
-  t["agent"] = 9
-  return t
-end
-
-function get_door_open()
-  t = {}
-  t["0"] = 0
-  t["closed"] = 1
-  t["open"] = 2
-  return t
-end
-
-function get_goal_num()
-  t = {}
-  t["0"] = 0
-  t["goal1"] = 1
-  t["goal2"] = 2
-  t["goal3"] = 3
-  return t
-end
-
-function get_color_num()
-  t = {}
-  t["0"] = 0
-  t["color1"] = 1
-  t["color2"] = 2
-  t["color3"] = 3
-  return t
-end
-
 local cmd = torch.CmdLine()
 cmd:text()
 cmd:text('Play games in MazeBase using wasd commands')
@@ -235,11 +145,6 @@ cmd:text()
 cmd:text('Options:')
 cmd:option('-gname', 'Goto', 'name of Mazebase game to play')
 cmd:text()
-
-type_mapping = get_type_mapping()
-door_open = get_door_open()
-goal_num = get_goal_num()
-color_num = get_color_num()
 
 local opt = cmd:parse(arg)
 print(opt)
