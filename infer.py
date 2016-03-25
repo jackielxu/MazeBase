@@ -59,7 +59,7 @@ for idx in progprint_xrange(ITERATIONS):
     posteriormodel.resample_model()
 
 posteriormodel.plot()
-plt.gcf().suptitle('HDP-HMM sampled model after 1000 iterations')
+plt.gcf().suptitle('HDP-HMM sampled model after {} iterations'.format(ITERATIONS))
 
 ### Sticky-HDP-HMM
 
@@ -73,7 +73,15 @@ for idx in progprint_xrange(ITERATIONS):
     posteriormodel.resample_model()
 
 posteriormodel.plot()
-plt.gcf().suptitle('Sticky HDP-HMM sampled model after 1000 iterations')
+plt.gcf().suptitle('Sticky HDP-HMM sampled model after {} iterations'.format(ITERATIONS))
+
+
+
+'''
+This demo shows the HDP-HSMM in action. Its iterations are slower than those for
+the (Sticky-)HDP-HMM, but explicit duration modeling can be a big advantage for 
+conditioning the prior or for discovering structure in data. 
+'''
 
 ## HDP-HSMM
 
@@ -91,6 +99,9 @@ for idx in progprint_xrange(ITERATIONS):
     posteriormodel.resample_model()
 
 posteriormodel.plot()
-plt.gcf().suptitle('HDP-HSMM sampled model after 1000 iterations')
+plt.gcf().suptitle('HDP-HSMM sampled model after {} iterations'.format(ITERATIONS))
+
+
+
 
 plt.show()
