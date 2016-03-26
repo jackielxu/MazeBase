@@ -10,8 +10,8 @@ require('image')
 local MazeMap = torch.class('MazeMap')
 
 function MazeMap:__init(opts)
-    self.height = 10 --opts.map_height or 10
-    self.width = 10 --opts.map_width or 10
+    self.height = 15 --opts.map_height or 10
+    self.width = 15 --opts.map_width or 10
     self.img_path = './games/images/'
 
     -- Items by x,y location

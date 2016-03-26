@@ -3,10 +3,13 @@ import numpy as np
 np.seterr(divide='ignore') # these warnings are usually harmless for this code
 from matplotlib import pyplot as plt
 import matplotlib
+import pylab
 import os
 matplotlib.rcParams['font.size'] = 8
 
 import pyhsmm
+import models
+from pyhsmm.util.stats import cov
 from pyhsmm.util.text import progprint_xrange
 
 print \
@@ -23,8 +26,8 @@ fit the model). Maybe this demo should use multinomial emissions...
 #  load data  #
 ###############
 
-data = np.loadtxt(os.path.join(os.path.dirname(__file__),'MultiGoals-feature-state-ts.txt'))[:2500]
-#data = np.loadtxt(os.path.join(os.path.dirname(__file__),'Goto-feature-state-ts.txt'))[:2500]
+# data = np.loadtxt(os.path.join(os.path.dirname(__file__),'MultiGoals-feature-state-ts.txt'))[:2500]
+data = np.loadtxt(os.path.join(os.path.dirname(__file__),'Goto-feature-state-ts.txt'))[:2500]
 # data = np.loadtxt(os.path.join(os.path.dirname(__file__),'LightKey-feature-state-ts.txt'))[:2500]
 mean = data.mean(axis=1)
 data = data - mean[:, np.newaxis]
@@ -48,6 +51,85 @@ obs_hypparams = {'mu_0':np.zeros(obs_dim),
 dur_hypparams = {'alpha_0':2,
                  'beta_0':2}
 
+## subHMMs
+
+Nsuper = 10
+Nsub = 10
+T = 1000
+
+try:
+    import brewer2mpl
+    plt.set_cmap(brewer2mpl.get_map('Set1','qualitative',max(3,min(8,Nsuper))).mpl_colormap)
+except:
+    pass
+
+obs_hypparams = dict(
+        mu_0=np.zeros(obs_dim),
+        sigma_0=np.eye(obs_dim),
+        kappa_0=0.1,
+        nu_0=obs_dim+10,
+        )
+
+dur_hypparams = dict(
+        r_discrete_distn=np.r_[0,0,0,0,0,1.,1.,1.],
+        alpha_0=40,
+        beta_0=10,
+        )
+
+
+true_obs_distnss = [[pyhsmm.distributions.Gaussian(**obs_hypparams) for substate in xrange(Nsub)]
+        for superstate in xrange(Nsuper)]
+
+true_dur_distns = [pyhsmm.distributions.NegativeBinomialIntegerR2Duration(
+    **dur_hypparams) for superstate in range(Nsuper)]
+
+truemodel = models.WeakLimitHDPHSMMSubHMMs(
+        init_state_concentration=6.,
+        sub_init_state_concentration=6.,
+        alpha=10.,gamma=10.,
+        sub_alpha=10.,sub_gamma=10.,
+        obs_distnss=true_obs_distnss,
+        dur_distns=true_dur_distns) 
+
+Nmaxsuper = 2*Nsuper
+Nmaxsub = 2*Nsub
+
+obs_distnss = \
+        [[pyhsmm.distributions.Gaussian(**obs_hypparams)
+            for substate in range(Nmaxsub)] for superstate in range(Nmaxsuper)]
+
+dur_distns = \
+        [pyhsmm.distributions.NegativeBinomialIntegerR2Duration(
+            **dur_hypparams) for superstate in range(Nmaxsuper)]
+
+model = models.WeakLimitHDPHSMMSubHMMs(
+        init_state_concentration=6.,
+        sub_init_state_concentration=6.,
+        alpha=6.,gamma=6.,
+        sub_alpha=6.,sub_gamma=6.,
+        obs_distnss=obs_distnss,
+        dur_distns=dur_distns)
+
+model.add_data(data)
+model.resample_parameters()
+model.resample_parameters()
+model.resample_parameters()
+
+###############
+#  inference  #
+###############
+
+for itr in progprint_xrange(5):
+    model.resample_model()
+
+plt.figure()
+model.plot()
+plt.gcf().suptitle('fit')
+plt.savefig('plots/subhmm.png')
+plt.close()
+s = model.states_list[0]
+
+
 ### HDP-HMM without the sticky bias
 
 obs_distns = [pyhsmm.distributions.Gaussian(**obs_hypparams) for state in xrange(Nmax)]
@@ -60,6 +142,8 @@ for idx in progprint_xrange(ITERATIONS):
 
 posteriormodel.plot()
 plt.gcf().suptitle('HDP-HMM sampled model after {} iterations'.format(ITERATIONS))
+plt.savefig('plots/hdp-hmm.png')
+plt.close() 
 
 ### Sticky-HDP-HMM
 
@@ -74,8 +158,8 @@ for idx in progprint_xrange(ITERATIONS):
 
 posteriormodel.plot()
 plt.gcf().suptitle('Sticky HDP-HMM sampled model after {} iterations'.format(ITERATIONS))
-
-
+plt.savefig('plots/sticky-hdp-hmm.png')
+plt.close()
 
 '''
 This demo shows the HDP-HSMM in action. Its iterations are slower than those for
@@ -100,8 +184,8 @@ for idx in progprint_xrange(ITERATIONS):
 
 posteriormodel.plot()
 plt.gcf().suptitle('HDP-HSMM sampled model after {} iterations'.format(ITERATIONS))
-
-
+plt.savefig('plots/hdp-hsmm.png')
+plt.close() 
 
 
 plt.show()

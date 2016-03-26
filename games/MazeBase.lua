@@ -42,9 +42,9 @@ function MazeBase:__init(opts, vocab)
     end
 
     self.ngoals = opts.ngoals or 1
-    self.nagents = opts.nagents or 1
 
-		-- Fix the number of blocks and waters
+		-- Fix the number of blocks and waters and agents
+    self.nagents = 1
     self.nblocks = 4
     self.nwater = 4
 
@@ -66,13 +66,15 @@ end
 function MazeBase:add_default_items()
 
 		-- Hard code locations of blocks and water
-  	self:place_item({type = 'block'}, 2, 2)
-		self:place_item({type = 'block'}, 2, 8)
-		self:place_item({type = 'block'}, 8, 2)
-		self:place_item({type = 'water'}, 4, 5)
-		self:place_item({type = 'water'}, 6, 2)
-		self:place_item({type = 'water'}, 1, 9)
-		self:place_item({type = 'water'}, 8, 8) 
+  	self:place_item({type = 'block'}, 3, 3)
+		self:place_item({type = 'block'}, 3, 10)
+		self:place_item({type = 'block'}, 9, 2)
+		self:place_item({type = 'block'}, 12, 12) 
+
+		self:place_item({type = 'water'}, 8, 5)
+		self:place_item({type = 'water'}, 4, 11)
+		self:place_item({type = 'water'}, 11, 7)
+		self:place_item({type = 'water'}, 5, 6) 
 
 		--[[ 
   	for i = 1, self.nblocks do
@@ -96,7 +98,7 @@ function MazeBase:add_default_items()
     if self.agent == nil then
         self.agents = {}
         for i = 1, self.nagents do
-            self.agents[i] = self:place_item_rand({type = 'agent', name = 'agent' .. i})
+            self.agents[i] = self:place_item({type = 'agent', name = 'agent' .. i}, 8, 8)
         end
         self.agent = self.agents[1]
     end
@@ -256,6 +258,8 @@ end
 
 function MazeBase:to_sentence_item(e, sentence)
     local s = e:to_sentence(self.agent.loc.y, self.agent.loc.x)
+		print(self.vocab)
+		
     for i = 1, #s do
         sentence[i] = self.vocab[s[i]]
     end
