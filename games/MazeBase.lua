@@ -43,8 +43,11 @@ function MazeBase:__init(opts, vocab)
 
     self.ngoals = opts.ngoals or 1
     self.nagents = opts.nagents or 1
-    self.nblocks = opts.nblocks or 0
-    self.nwater = opts.nwater or 0
+
+		-- Fix the number of blocks and waters
+    self.nblocks = 4
+    self.nwater = 4
+
     self.finished = false
     self.finish_by_goal = false
 end
@@ -61,12 +64,26 @@ function MazeBase:add_boundary()
 end
 
 function MazeBase:add_default_items()
-    for i = 1, self.nblocks do
+
+		-- Hard code locations of blocks and water
+  	self:place_item({type = 'block'}, 2, 2)
+		self:place_item({type = 'block'}, 2, 8)
+		self:place_item({type = 'block'}, 8, 2)
+		self:place_item({type = 'water'}, 4, 5)
+		self:place_item({type = 'water'}, 6, 2)
+		self:place_item({type = 'water'}, 1, 9)
+		self:place_item({type = 'water'}, 8, 8) 
+
+		--[[ 
+  	for i = 1, self.nblocks do
         self:place_item_rand({type = 'block'})
     end
-    for i = 1, self.nwater do
+
+		for i = 1, self.nwater do
         local e = self:place_item_rand({type = 'water'})
     end
+		--]] 
+		
     if self.enable_corners == 1 then
         local H = self.map.height
         local W = self.map.width

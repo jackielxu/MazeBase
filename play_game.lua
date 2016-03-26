@@ -143,7 +143,7 @@ cmd:text()
 cmd:text('Play games in MazeBase using wasd commands')
 cmd:text()
 cmd:text('Options:')
-cmd:option('-gname', 'Goto', 'name of Mazebase game to play')
+cmd:option('--gname', 'Goto', 'name of Mazebase game to play')
 cmd:text()
 
 local opt = cmd:parse(arg)
