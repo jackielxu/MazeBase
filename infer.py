@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 import matplotlib
 import pylab
 import os
+import sys
 matplotlib.rcParams['font.size'] = 8
 
 import pyhsmm
@@ -28,8 +29,11 @@ fit the model). Maybe this demo should use multinomial emissions...
 #  load data  #
 ###############
 
+testcase = sys.argv[1]
+path = 'data/' + testcase + '/Goto-' + testcase + '-feature-state-ts.txt'
+
 # data = np.loadtxt(os.path.join(os.path.dirname(__file__),'MultiGoals-feature-state-ts.txt'))[:2500]
-data = np.loadtxt(os.path.join(os.path.dirname(__file__),'Goto-feature-state-ts.txt'))[:2500]
+data = np.loadtxt(os.path.join(os.path.dirname(__file__), path))
 # data = np.loadtxt(os.path.join(os.path.dirname(__file__),'LightKey-feature-state-ts.txt'))[:2500]
 mean = data.mean(axis=1)
 data = data - mean[:, np.newaxis]
@@ -42,7 +46,7 @@ data = data - mean[:, np.newaxis]
 Nmax = 10
 
 # Set iteration count
-ITERATIONS = 4000
+ITERATIONS = 5000
 
 # and some hyperparameters
 obs_dim = data.shape[1]
@@ -121,7 +125,7 @@ for itr in progprint_xrange(ITERATIONS):
 plt.figure()
 model.plot()
 plt.gcf().suptitle('subHSMM sampled model after {} iterations'.format(ITERATIONS))
-plt.savefig('plots/subhmm.png')
+plt.savefig('plots/' + testcase + '/subhmm.png')
 plt.close()
 s = model.states_list[0] 
 
@@ -137,7 +141,7 @@ for idx in progprint_xrange(ITERATIONS):
 
 posteriormodel.plot()
 plt.gcf().suptitle('HDP-HMM sampled model after {} iterations'.format(ITERATIONS))
-plt.savefig('plots/hdp-hmm.png')
+plt.savefig('plots/' + testcase + '/hdp-hmm.png')
 plt.close() 
 
 # Some more hypparams
@@ -163,7 +167,7 @@ for idx in progprint_xrange(ITERATIONS):
 
 posteriormodel.plot()
 plt.gcf().suptitle('Sticky HDP-HMM sampled model after {} iterations'.format(ITERATIONS))
-plt.savefig('plots/sticky-hdp-hmm.png')
+plt.savefig('plots/' + testcase + '/sticky-hdp-hmm.png')
 plt.close()
 
 '''
@@ -189,7 +193,7 @@ for idx in progprint_xrange(ITERATIONS):
 
 posteriormodel.plot()
 plt.gcf().suptitle('HDP-HSMM sampled model after {} iterations'.format(ITERATIONS))
-plt.savefig('plots/hdp-hsmm.png')
+plt.savefig('plots/' + testcase + '/hdp-hsmm.png')
 plt.close() 
 
 
