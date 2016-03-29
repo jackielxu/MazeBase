@@ -140,7 +140,6 @@ for idx in progprint_xrange(ITERATIONS):
     posteriormodel.resample_model()
 
 posteriormodel.plot()
-print posteriormodel
 plt.gcf().suptitle('HDP-HMM sampled model after {} iterations'.format(ITERATIONS))
 plt.savefig('plots/' + testcase + '/hdp-hmm.png')
 plt.close() 
@@ -192,7 +191,10 @@ posteriormodel.add_data(data,trunc=60) # duration truncation speeds things up wh
 for idx in progprint_xrange(ITERATIONS):
     posteriormodel.resample_model()
 
-posteriormodel.plot() #TODO: find where segment data is held
+# TODO: Find where segment data is held
+print posteriormodel # TODO: print feature_ax and stateseq_axs?
+
+posteriormodel.plot() 
 plt.gcf().suptitle('HDP-HSMM sampled model after {} iterations'.format(ITERATIONS))
 plt.savefig('plots/' + testcase + '/hdp-hsmm.png')
 plt.close() 
