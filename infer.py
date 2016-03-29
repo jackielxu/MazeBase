@@ -29,7 +29,7 @@ fit the model). Maybe this demo should use multinomial emissions...
 ###############
 
 # data = np.loadtxt(os.path.join(os.path.dirname(__file__),'MultiGoals-feature-state-ts.txt'))[:2500]
-data = np.loadtxt(os.path.join(os.path.dirname(__file__),'Goto-feature-state-ts.txt'))[:2500]
+data = np.loadtxt(os.path.join(os.path.dirname(__file__),'data/square/Goto-square-feature-state-ts.txt'))[:2500]
 # data = np.loadtxt(os.path.join(os.path.dirname(__file__),'LightKey-feature-state-ts.txt'))[:2500]
 mean = data.mean(axis=1)
 data = data - mean[:, np.newaxis]
@@ -42,7 +42,7 @@ data = data - mean[:, np.newaxis]
 Nmax = 10
 
 # Set iteration count
-ITERATIONS = 4000
+ITERATIONS = 100
 
 # and some hyperparameters
 obs_dim = data.shape[1]
@@ -136,6 +136,7 @@ for idx in progprint_xrange(ITERATIONS):
     posteriormodel.resample_model()
 
 posteriormodel.plot()
+print posteriormodel
 plt.gcf().suptitle('HDP-HMM sampled model after {} iterations'.format(ITERATIONS))
 plt.savefig('plots/hdp-hmm.png')
 plt.close() 
@@ -187,7 +188,7 @@ posteriormodel.add_data(data,trunc=60) # duration truncation speeds things up wh
 for idx in progprint_xrange(ITERATIONS):
     posteriormodel.resample_model()
 
-posteriormodel.plot()
+posteriormodel.plot() #TODO: find where segment data is held
 plt.gcf().suptitle('HDP-HSMM sampled model after {} iterations'.format(ITERATIONS))
 plt.savefig('plots/hdp-hsmm.png')
 plt.close() 
