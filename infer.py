@@ -1,5 +1,7 @@
 from __future__ import division
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 np.seterr(divide='ignore') # these warnings are usually harmless for this code
 from matplotlib import pyplot as plt
 import matplotlib
@@ -40,16 +42,10 @@ data = data - mean[:, np.newaxis]
 Nmax = 10
 
 # Set iteration count
-ITERATIONS = 2000
+ITERATIONS = 4000
 
 # and some hyperparameters
 obs_dim = data.shape[1]
-obs_hypparams = {'mu_0':np.zeros(obs_dim),
-                'sigma_0':np.eye(obs_dim),
-                'kappa_0':0.3,
-                'nu_0':obs_dim+5}
-dur_hypparams = {'alpha_0':2,
-                 'beta_0':2}
 
 ## subHMMs
 
@@ -119,16 +115,15 @@ model.resample_parameters()
 #  inference  #
 ###############
 
-for itr in progprint_xrange(5):
+for itr in progprint_xrange(ITERATIONS):
     model.resample_model()
 
 plt.figure()
 model.plot()
-plt.gcf().suptitle('fit')
+plt.gcf().suptitle('subHSMM sampled model after {} iterations'.format(ITERATIONS))
 plt.savefig('plots/subhmm.png')
 plt.close()
-s = model.states_list[0]
-
+s = model.states_list[0] 
 
 ### HDP-HMM without the sticky bias
 
@@ -144,6 +139,16 @@ posteriormodel.plot()
 plt.gcf().suptitle('HDP-HMM sampled model after {} iterations'.format(ITERATIONS))
 plt.savefig('plots/hdp-hmm.png')
 plt.close() 
+
+# Some more hypparams
+
+obs_hypparams = {'mu_0':np.zeros(obs_dim),
+                'sigma_0':np.eye(obs_dim),
+                'kappa_0':0.3,
+                'nu_0':obs_dim+5}
+dur_hypparams = {'alpha_0':2,
+                 'beta_0':2}
+
 
 ### Sticky-HDP-HMM
 
