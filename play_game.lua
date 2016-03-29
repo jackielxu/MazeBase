@@ -13,8 +13,8 @@ function main(gname)
   print(objects)
 
   -- Prepare files to write timeseries information
-  game_state_filename = gname .. "-feature-state-ts.txt"
-  action_state_filename = gname .. "-action-state-ts.txt"
+  game_state_filename = gname .. "-triangle-feature-state-ts.txt"
+  action_state_filename = gname .. "-triangle-action-state-ts.txt"
 
   -- Create the buffer to store actions to be read and written to file
   action_buffer = {}

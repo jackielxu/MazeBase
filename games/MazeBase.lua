@@ -259,7 +259,11 @@ end
 function MazeBase:to_sentence_item(e, sentence)
     local s = e:to_sentence(self.agent.loc.y, self.agent.loc.x)
 		print(self.vocab)
-		
+		print("=====================================")
+		print(s[i])
+		print("*************************************")
+		print(self.vocab[s[i]]) 
+
     for i = 1, #s do
         sentence[i] = self.vocab[s[i]]
     end
